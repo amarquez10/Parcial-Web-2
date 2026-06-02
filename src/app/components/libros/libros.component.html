@@ -1,0 +1,152 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-title">
+      <div class="icon-wrapper" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Libros</h1>
+        <p class="subtitle">Catálogo de libros por biblioteca</p>
+      </div>
+    </div>
+    <button class="btn-primary btn-violet" (click)="openCreate()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Nuevo Libro
+    </button>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert alert-success" *ngIf="successMsg">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    {{ successMsg }}
+  </div>
+  <div class="alert alert-error" *ngIf="error && !showForm">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    {{ error }}
+  </div>
+
+  <!-- Modal Form -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="closeForm()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editMode ? 'Editar Libro' : 'Nuevo Libro' }}</h2>
+        <button class="btn-close" (click)="closeForm()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+        <div class="form-group">
+          <label for="titulo">Título</label>
+          <input id="titulo" type="text" [(ngModel)]="formData.titulo" placeholder="Ej: Cien años de soledad" maxlength="150">
+        </div>
+        <div class="form-group">
+          <label for="autor">Autor</label>
+          <input id="autor" type="text" [(ngModel)]="formData.autor" placeholder="Ej: Gabriel García Márquez" maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="categoria">Categoría</label>
+          <input id="categoria" type="text" [(ngModel)]="formData.categoria" placeholder="Ej: Novela, Ciencia, Historia..." maxlength="50">
+        </div>
+        <div class="form-group">
+          <label for="bibliotecaId">Biblioteca</label>
+          <select id="bibliotecaId" [(ngModel)]="formData.bibliotecaId">
+            <option value="0" disabled>-- Selecciona una biblioteca --</option>
+            <option *ngFor="let b of bibliotecas" [value]="b.id">{{ b.nombre }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeForm()">Cancelar</button>
+        <button class="btn-primary btn-violet" (click)="save()"
+          [disabled]="!formData.titulo || !formData.autor || !formData.categoria || !formData.bibliotecaId">
+          {{ editMode ? 'Guardar cambios' : 'Crear libro' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner spinner-violet"></div>
+    <p>Cargando libros...</p>
+  </div>
+
+  <!-- Empty -->
+  <div class="empty-state" *ngIf="!loading && libros.length === 0 && !error">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </svg>
+    <h3>No hay libros registrados</h3>
+    <p>Agrega el primer libro haciendo clic en "Nuevo Libro"</p>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container" *ngIf="!loading && libros.length > 0">
+    <div class="table-info">
+      <span class="badge badge-violet">{{ libros.length }} {{ libros.length === 1 ? 'libro' : 'libros' }}</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Categoría</th>
+          <th>Biblioteca</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let l of libros; let i = index">
+          <td><span class="row-number">{{ i + 1 }}</span></td>
+          <td><strong>{{ l.titulo }}</strong></td>
+          <td class="text-muted">{{ l.autor }}</td>
+          <td>
+            <span class="categoria-badge">{{ l.categoria }}</span>
+          </td>
+          <td>
+            <span class="biblioteca-ref">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+              {{ getBibliotecaNombre(l.bibliotecaId) }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-icon btn-edit" (click)="openEdit(l)" title="Editar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Editar
+              </button>
+              <button class="btn-icon btn-delete" (click)="delete(l.id!)" title="Eliminar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Eliminar
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

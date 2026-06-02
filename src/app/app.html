@@ -1,0 +1,110 @@
+<div class="container">
+  <h1>Gestión de Biblioteca</h1>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="vista === 'bibliotecas'" (click)="vista = 'bibliotecas'">Bibliotecas</button>
+    <button [class.active]="vista === 'libros'" (click)="vista = 'libros'">Libros</button>
+  </div>
+
+  <!-- Mensaje -->
+  <p class="msg" *ngIf="msg">{{ msg }}</p>
+
+  <!-- ══════════ BIBLIOTECAS ══════════ -->
+  <div *ngIf="vista === 'bibliotecas'">
+    <div class="section-header">
+      <h2>Bibliotecas</h2>
+      <button class="btn-add" (click)="abrirCrearBib()">+ Nueva</button>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-box" *ngIf="showBibForm">
+      <h3>{{ editBib ? 'Editar' : 'Nueva' }} Biblioteca</h3>
+      <label>Nombre</label>
+      <input [(ngModel)]="bib.nombre" placeholder="Nombre">
+      <label>Dirección</label>
+      <input [(ngModel)]="bib.direccion" placeholder="Dirección">
+      <label>Teléfono</label>
+      <input [(ngModel)]="bib.telefono" placeholder="Teléfono">
+      <label>Responsable</label>
+      <input [(ngModel)]="bib.responsable" placeholder="Responsable">
+      <div class="form-actions">
+        <button class="btn-save" (click)="guardarBib()">Guardar</button>
+        <button class="btn-cancel" (click)="showBibForm = false">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <table *ngIf="bibliotecas.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Responsable</th><th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of bibliotecas">
+          <td>{{ b.id }}</td>
+          <td>{{ b.nombre }}</td>
+          <td>{{ b.direccion }}</td>
+          <td>{{ b.telefono }}</td>
+          <td>{{ b.responsable }}</td>
+          <td>
+            <button class="btn-edit" (click)="abrirEditBib(b)">Editar</button>
+            <button class="btn-del" (click)="eliminarBib(b.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="bibliotecas.length === 0" class="empty">No hay bibliotecas registradas.</p>
+  </div>
+
+  <!-- ══════════ LIBROS ══════════ -->
+  <div *ngIf="vista === 'libros'">
+    <div class="section-header">
+      <h2>Libros</h2>
+      <button class="btn-add" (click)="abrirCrearLib()">+ Nuevo</button>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-box" *ngIf="showLibForm">
+      <h3>{{ editLib ? 'Editar' : 'Nuevo' }} Libro</h3>
+      <label>Título</label>
+      <input [(ngModel)]="lib.titulo" placeholder="Título">
+      <label>Autor</label>
+      <input [(ngModel)]="lib.autor" placeholder="Autor">
+      <label>Categoría</label>
+      <input [(ngModel)]="lib.categoria" placeholder="Categoría">
+      <label>Biblioteca</label>
+      <select [(ngModel)]="lib.bibliotecaId">
+        <option *ngFor="let b of bibliotecas" [value]="b.id">{{ b.nombre }}</option>
+      </select>
+      <div class="form-actions">
+        <button class="btn-save" (click)="guardarLib()">Guardar</button>
+        <button class="btn-cancel" (click)="showLibForm = false">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <table *ngIf="libros.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th><th>Título</th><th>Autor</th><th>Categoría</th><th>Biblioteca</th><th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let l of libros">
+          <td>{{ l.id }}</td>
+          <td>{{ l.titulo }}</td>
+          <td>{{ l.autor }}</td>
+          <td>{{ l.categoria }}</td>
+          <td>{{ getBibNombre(l.bibliotecaId) }}</td>
+          <td>
+            <button class="btn-edit" (click)="abrirEditLib(l)">Editar</button>
+            <button class="btn-del" (click)="eliminarLib(l.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="libros.length === 0" class="empty">No hay libros registrados.</p>
+  </div>
+</div>

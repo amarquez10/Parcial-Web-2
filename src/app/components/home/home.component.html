@@ -1,0 +1,113 @@
+<div class="home-container">
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Sistema de Gestión</div>
+      <h1 class="hero-title">
+        Bienvenido a
+        <span class="gradient-text">BiblioApp</span>
+      </h1>
+      <p class="hero-subtitle">
+        Administra tus bibliotecas y catálogos de libros de manera eficiente, rápida y moderna.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/bibliotecas" class="btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          Ver Bibliotecas
+        </a>
+        <a routerLink="/libros" class="btn-outline">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          Ver Libros
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status & Stats -->
+  <div class="stats-grid">
+    <div class="stat-card" [class.stat-ok]="backendOk" [class.stat-error]="!backendOk && !loading">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Estado del Backend</div>
+        <div class="stat-value stat-status" *ngIf="!loading">
+          <span *ngIf="backendOk" class="status-dot ok"></span>
+          <span *ngIf="!backendOk" class="status-dot error"></span>
+          {{ backendOk ? 'Conectado' : 'Sin conexión' }}
+        </div>
+        <div class="stat-value" *ngIf="loading">Verificando...</div>
+        <div class="stat-sub">localhost:8080</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-blue">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Bibliotecas</div>
+        <div class="stat-value stat-number">{{ loading ? '—' : totalBibliotecas }}</div>
+        <div class="stat-sub">registradas en el sistema</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-violet">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Libros</div>
+        <div class="stat-value stat-number">{{ loading ? '—' : totalLibros }}</div>
+        <div class="stat-sub">en el catálogo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick access -->
+  <div class="quick-access">
+    <h2 class="section-title">Acceso rápido</h2>
+    <div class="cards-grid">
+      <a routerLink="/bibliotecas" class="quick-card">
+        <div class="quick-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="quick-card-body">
+          <h3>Gestionar Bibliotecas</h3>
+          <p>Crear, editar y eliminar registros de bibliotecas</p>
+        </div>
+        <div class="quick-card-arrow">→</div>
+      </a>
+      <a routerLink="/libros" class="quick-card quick-card-violet">
+        <div class="quick-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <div class="quick-card-body">
+          <h3>Gestionar Libros</h3>
+          <p>Administrar el catálogo de libros por biblioteca</p>
+        </div>
+        <div class="quick-card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</div>
